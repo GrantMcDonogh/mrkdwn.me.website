@@ -1,0 +1,46 @@
+---
+interface Props {
+  icon: string;
+  title: string;
+  description: string;
+  delay?: number;
+}
+
+const { icon, title, description, delay = 0 } = Astro.props;
+
+const iconMap: Record<string, string> = {
+  FileEdit: `<path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/>`,
+  Link: `<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>`,
+  Network: `<rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/>`,
+  MessageSquare: `<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>`,
+  FolderLock: `<rect width="8" height="5" x="14" y="17" rx="1"/><path d="M10 20H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H20a2 2 0 0 1 2 2v2.5"/><path d="M20 17v-2a2 2 0 1 0-4 0v2"/>`,
+  RefreshCw: `<path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/>`,
+};
+---
+
+<div
+  class:list={[
+    "group rounded-xl border border-edge p-6 transition-all duration-300 hover:border-accent/30 hover:shadow-lg reveal",
+    delay > 0 && `reveal-delay-${delay}`,
+  ]}
+  style="background-color: var(--bg-secondary);"
+>
+  <!-- Icon -->
+  <div class="w-10 h-10 rounded-lg flex items-center justify-center mb-4 transition-colors" style="background-color: rgba(127, 109, 242, 0.1);">
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="#7f6df2"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      set:html={iconMap[icon] || ""}
+    />
+  </div>
+
+  <!-- Content -->
+  <h3 class="text-lg font-semibold text-body mb-2">{title}</h3>
+  <p class="text-sm text-muted leading-relaxed">{description}</p>
+</div>

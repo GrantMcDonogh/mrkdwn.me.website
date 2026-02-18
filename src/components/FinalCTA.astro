@@ -1,0 +1,26 @@
+---
+import Button from "./Button.astro";
+---
+
+<section class="relative py-20 md:py-32 overflow-hidden">
+  <!-- Background glow -->
+  <div
+    class="absolute inset-0 pointer-events-none"
+    style="background: radial-gradient(ellipse 50% 60% at 50% 50%, rgba(127, 109, 242, 0.06), transparent);"
+  ></div>
+
+  <div class="relative mx-auto max-w-6xl px-4 sm:px-6 text-center">
+    <h2 class="text-3xl md:text-5xl font-extrabold text-body reveal">
+      Start building your second brain
+      <span class="text-accent">today.</span>
+    </h2>
+    <p class="mt-6 text-lg text-muted max-w-xl mx-auto reveal reveal-delay-1">
+      14-day free trial. No credit card required. Your notes, your way.
+    </p>
+    <div class="mt-10 reveal reveal-delay-2">
+      <Button href="https://app.mrkdwn.me" variant="primary" size="lg">
+        Start Your Free Trial
+      </Button>
+    </div>
+  </div>
+</section>

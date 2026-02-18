@@ -1,0 +1,129 @@
+---
+import Section from "./Section.astro";
+import Button from "./Button.astro";
+
+const features = [
+  "Unlimited vaults",
+  "Unlimited notes",
+  "Markdown editor with live preview",
+  "Wiki links & backlinks",
+  "Knowledge graph",
+  "AI Chat (powered by Claude)",
+  "Full-text search",
+  "Import from Obsidian",
+  "MCP Server access",
+  "Real-time sync",
+];
+---
+
+<Section id="pricing">
+  <div class="text-center mb-12 reveal">
+    <h2 class="text-3xl md:text-4xl font-bold text-body">
+      Simple, transparent <span class="text-accent">pricing</span>
+    </h2>
+    <p class="mt-4 text-muted text-lg max-w-2xl mx-auto">
+      Try everything free for 14 days. No credit card required.
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+    <!-- Monthly -->
+    <div
+      class="rounded-xl border border-edge p-8 flex flex-col reveal reveal-delay-1"
+      style="background-color: var(--bg-secondary);"
+    >
+      <h3 class="text-xl font-bold text-body">Monthly</h3>
+      <div class="mt-2 flex items-baseline gap-1">
+        <span class="text-4xl font-extrabold text-body">$8</span>
+        <span class="text-muted text-sm">/month</span>
+      </div>
+      <p class="text-sm text-muted mt-2">Full access, cancel anytime.</p>
+
+      <ul class="mt-8 space-y-3 flex-1">
+        {features.map((feature) => (
+          <li class="flex items-center gap-3 text-sm text-body">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#7f6df2"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+            {feature}
+          </li>
+        ))}
+      </ul>
+
+      <div class="mt-8">
+        <Button
+          href="https://app.mrkdwn.me"
+          variant="secondary"
+          size="md"
+          class="w-full text-center"
+        >
+          Start 14-Day Free Trial
+        </Button>
+      </div>
+    </div>
+
+    <!-- Annual -->
+    <div
+      class="rounded-xl border border-accent shadow-xl shadow-accent/10 p-8 flex flex-col reveal reveal-delay-2"
+      style="background-color: var(--bg-secondary);"
+    >
+      <div class="flex items-center gap-3 mb-1">
+        <div class="text-accent text-xs font-semibold uppercase tracking-wider">
+          Best Value
+        </div>
+        <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-accent text-white">
+          Save 17%
+        </span>
+      </div>
+
+      <h3 class="text-xl font-bold text-body">Annual</h3>
+      <div class="mt-2 flex items-baseline gap-1">
+        <span class="text-4xl font-extrabold text-body">$80</span>
+        <span class="text-muted text-sm">/year</span>
+      </div>
+      <p class="text-sm text-muted mt-2">
+        That's <span class="text-body font-medium">$6.67/month</span> — two months free.
+      </p>
+
+      <ul class="mt-8 space-y-3 flex-1">
+        {features.map((feature) => (
+          <li class="flex items-center gap-3 text-sm text-body">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#7f6df2"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+            {feature}
+          </li>
+        ))}
+      </ul>
+
+      <div class="mt-8">
+        <Button
+          href="https://app.mrkdwn.me"
+          variant="primary"
+          size="md"
+          class="w-full text-center"
+        >
+          Start 14-Day Free Trial
+        </Button>
+      </div>
+    </div>
+  </div>
+</Section>

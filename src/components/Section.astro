@@ -1,0 +1,22 @@
+---
+interface Props {
+  id?: string;
+  class?: string;
+  padded?: boolean;
+}
+
+const { id, class: className = "", padded = true } = Astro.props;
+---
+
+<section
+  id={id}
+  class:list={[
+    "w-full",
+    padded && "py-16 md:py-24",
+    className,
+  ]}
+>
+  <div class="mx-auto max-w-6xl px-4 sm:px-6">
+    <slot />
+  </div>
+</section>

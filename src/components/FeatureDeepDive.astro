@@ -1,0 +1,163 @@
+---
+import Section from "./Section.astro";
+import GraphAnimation from "./react/GraphAnimation.tsx";
+---
+
+<!-- Deep Dive 1: Write, Link, Discover -->
+<Section>
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+    <div class="reveal">
+      <div class="text-accent text-sm font-semibold uppercase tracking-wider mb-3">Editor + Wiki Links</div>
+      <h2 class="text-3xl md:text-4xl font-bold text-body mb-6">
+        Write, Link, Discover
+      </h2>
+      <p class="text-muted text-lg leading-relaxed mb-4">
+        Experience a distraction-free markdown editor with live preview that shows
+        your formatting as you type. Headings, bold, italic, code blocks, and task lists
+        all render inline — no toggling between modes.
+      </p>
+      <p class="text-muted text-lg leading-relaxed mb-4">
+        Type <span class="text-accent font-medium">[[</span> to link to any note in
+        your vault with fuzzy autocomplete. Every link creates a bidirectional
+        connection — see who references your note in the backlinks panel.
+      </p>
+      <p class="text-muted text-lg leading-relaxed">
+        Rename a note, and every wiki link across your entire vault updates
+        automatically. Your knowledge graph stays consistent, always.
+      </p>
+    </div>
+
+    <!-- Editor illustration -->
+    <div class="reveal reveal-delay-2">
+      <div class="rounded-xl border border-edge overflow-hidden shadow-xl" style="background-color: #1e1e1e;">
+        <!-- Editor toolbar -->
+        <div class="flex items-center h-9 px-3 border-b gap-1" style="border-color: #3e3e3e; background-color: #262626;">
+          <div class="px-3 py-1 rounded-t text-xs font-medium" style="background-color: #1e1e1e; color: #dcddde;">Project Overview</div>
+          <div class="px-3 py-1 text-xs" style="color: #999;">Research Notes</div>
+        </div>
+        <!-- Content -->
+        <div class="p-5 space-y-3 text-sm" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+          <div class="text-xl font-bold" style="color: #dcddde;">Getting Started with PKM</div>
+          <div style="color: #dcddde;">
+            Personal Knowledge Management is about building a
+            <span class="font-bold">system for thinking</span>. The goal is to create a
+            <span style="color: #7f6df2;">[[second brain]]</span> that grows with you.
+          </div>
+          <div style="color: #dcddde;">
+            Start by capturing ideas in
+            <span style="color: #7f6df2;">[[daily notes]]</span> and gradually connect
+            them to <span style="color: #7f6df2;">[[permanent notes]]</span>.
+          </div>
+          <!-- Autocomplete dropdown -->
+          <div class="relative inline-block">
+            <span style="color: #dcddde;">See also: <span style="color: #7f6df2;">[[Zettel</span></span>
+            <div class="absolute left-16 top-6 w-48 rounded-lg border shadow-xl py-1 z-10" style="background-color: #262626; border-color: #3e3e3e;">
+              <div class="px-3 py-1.5 text-xs font-medium" style="background-color: #7f6df2; color: white;">Zettelkasten Method</div>
+              <div class="px-3 py-1.5 text-xs" style="color: #dcddde;">Zettel Templates</div>
+              <div class="px-3 py-1.5 text-xs" style="color: #dcddde;">Zettelkasten vs Folders</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</Section>
+
+<!-- Deep Dive 2: See the Big Picture -->
+<Section>
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+    <!-- Graph on left -->
+    <div class="order-2 lg:order-1 reveal">
+      <div class="rounded-xl border border-edge overflow-hidden p-6 shadow-xl" style="background-color: #1e1e1e;">
+        <GraphAnimation client:visible />
+      </div>
+    </div>
+
+    <div class="order-1 lg:order-2 reveal reveal-delay-1">
+      <div class="text-accent text-sm font-semibold uppercase tracking-wider mb-3">Knowledge Graph</div>
+      <h2 class="text-3xl md:text-4xl font-bold text-body mb-6">
+        See the Big Picture
+      </h2>
+      <p class="text-muted text-lg leading-relaxed mb-4">
+        Watch your knowledge come alive with an interactive force-directed graph.
+        Every note is a node, every wiki link is a connection. The more connected
+        a note, the larger it appears.
+      </p>
+      <p class="text-muted text-lg leading-relaxed mb-4">
+        Click any node to open that note. Drag nodes to rearrange. Zoom and pan
+        to explore. Your active note glows in purple so you always know where you are.
+      </p>
+      <p class="text-muted text-lg leading-relaxed">
+        Discover unexpected connections between ideas you never thought were
+        related. The graph reveals the hidden structure of your thinking.
+      </p>
+    </div>
+  </div>
+</Section>
+
+<!-- Deep Dive 3: Ask Your Notes Anything -->
+<Section>
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+    <div class="reveal">
+      <div class="text-accent text-sm font-semibold uppercase tracking-wider mb-3">AI-Powered Chat</div>
+      <h2 class="text-3xl md:text-4xl font-bold text-body mb-6">
+        Ask Your Notes Anything
+      </h2>
+      <p class="text-muted text-lg leading-relaxed mb-4">
+        Chat with an AI that has read every note in your vault. Ask questions,
+        get summaries, find connections — all grounded in your own knowledge base,
+        not generic internet answers.
+      </p>
+      <p class="text-muted text-lg leading-relaxed mb-4">
+        Every answer cites the specific notes it drew from, so you can verify
+        and dive deeper. It's like having a research assistant who knows your
+        work inside and out.
+      </p>
+      <p class="text-muted text-lg leading-relaxed">
+        Powered by Claude, responses stream in real time so you never have to
+        wait. Ask follow-up questions to explore ideas further.
+      </p>
+    </div>
+
+    <!-- Chat illustration -->
+    <div class="reveal reveal-delay-2">
+      <div class="rounded-xl border border-edge overflow-hidden shadow-xl" style="background-color: #262626;">
+        <!-- Chat header -->
+        <div class="flex items-center h-10 px-4 border-b" style="border-color: #3e3e3e;">
+          <div class="flex items-center gap-2">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7f6df2" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <span class="text-xs font-semibold" style="color: #999;">AI CHAT</span>
+          </div>
+        </div>
+        <!-- Messages -->
+        <div class="p-4 space-y-4" style="min-height: 240px;">
+          <!-- User message -->
+          <div class="flex justify-end">
+            <div class="rounded-lg px-3 py-2 text-xs max-w-[80%]" style="background-color: #303030; color: #dcddde;">
+              What are the key principles of the Zettelkasten method?
+            </div>
+          </div>
+          <!-- AI response -->
+          <div class="flex justify-start">
+            <div class="rounded-lg px-3 py-2 text-xs max-w-[85%] space-y-2" style="background-color: rgba(127,109,242,0.08); color: #dcddde;">
+              <p>Based on your notes, the Zettelkasten method revolves around three core principles:</p>
+              <p><span class="font-semibold">1. Atomic notes</span> — each note captures a single idea, making it reusable across contexts.</p>
+              <p><span class="font-semibold">2. Connections over categories</span> — instead of filing notes in folders, you link related ideas using wiki links.</p>
+              <p><span class="font-semibold">3. Emergence</span> — insights emerge from the network of connections rather than top-down organization.</p>
+              <p class="pt-1" style="color: #999;">
+                Sources: <span style="color: #7f6df2;">[[Zettelkasten Method]]</span> · <span style="color: #7f6df2;">[[Permanent Notes]]</span>
+              </p>
+            </div>
+          </div>
+        </div>
+        <!-- Input -->
+        <div class="px-4 pb-4">
+          <div class="flex items-center gap-2 rounded-lg border px-3 py-2" style="border-color: #3e3e3e; background-color: #1e1e1e;">
+            <span class="text-xs flex-1" style="color: #999;">Ask about your notes...</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7f6df2" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</Section>

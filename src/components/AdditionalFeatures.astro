@@ -1,0 +1,51 @@
+---
+import Section from "./Section.astro";
+import { additionalFeatures } from "../content/features";
+
+const iconMap: Record<string, string> = {
+  Search: `<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>`,
+  Command: `<path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/>`,
+  Columns3: `<rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/><path d="M15 3v18"/>`,
+  FolderTree: `<path d="M20 10a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-2.5a1 1 0 0 1-.8-.4l-.9-1.2A1 1 0 0 0 15 3h-2a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1Z"/><path d="M20 21a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1h-2.9a1 1 0 0 1-.88-.55l-.42-.85a1 1 0 0 0-.92-.6H13a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1Z"/><path d="M3 5a2 2 0 0 0 2 2h3"/><path d="M3 3v13a2 2 0 0 0 2 2h3"/>`,
+  Bot: `<path d="M12 8V4H8"/><rect x="2" y="8" width="20" height="14" rx="4"/><path d="M9 15h.01"/><path d="M15 15h.01"/>`,
+  Upload: `<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>`,
+};
+---
+
+<Section>
+  <div class="text-center mb-10 reveal">
+    <h2 class="text-2xl md:text-3xl font-bold text-body">
+      And so much more
+    </h2>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    {additionalFeatures.map((feature, i) => (
+      <div
+        class:list={[
+          "flex items-start gap-3 rounded-lg border border-edge p-4 transition-colors hover:border-accent/20 reveal",
+          `reveal-delay-${Math.min(i + 1, 5)}`,
+        ]}
+        style="background-color: var(--bg-secondary);"
+      >
+        <div class="shrink-0 mt-0.5">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#7f6df2"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            set:html={iconMap[feature.icon] || ""}
+          />
+        </div>
+        <div>
+          <div class="text-sm font-semibold text-body">{feature.title}</div>
+          <div class="text-xs text-muted mt-1">{feature.description}</div>
+        </div>
+      </div>
+    ))}
+  </div>
+</Section>

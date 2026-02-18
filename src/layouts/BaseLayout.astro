@@ -1,0 +1,84 @@
+---
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "mrkdwn.me — Cloud-Based Knowledge Management Inspired by Obsidian",
+  description = "Write in Markdown, connect ideas with wiki links, visualize your knowledge graph, and chat with AI about your notes. Free, browser-based, Obsidian-compatible.",
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL("/og-image.png", Astro.site);
+
+import "../styles/global.css";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Theme initialization (prevents flash) -->
+    <script is:inline>
+      (function () {
+        const saved = localStorage.getItem("theme");
+        const preferred = window.matchMedia("(prefers-color-scheme: dark)")
+          .matches
+          ? "dark"
+          : "light";
+        const theme = saved || preferred || "dark";
+        document.documentElement.setAttribute("data-theme", theme);
+      })();
+    </script>
+
+    <!-- SEO -->
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+  </head>
+  <body class="bg-surface text-body">
+    <slot />
+
+    <!-- Scroll reveal observer -->
+    <script is:inline>
+      (function () {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("visible");
+                observer.unobserve(entry.target);
+              }
+            });
+          },
+          { threshold: 0.1, rootMargin: "0px 0px -40px 0px" }
+        );
+
+        document.querySelectorAll(".reveal").forEach((el) => {
+          observer.observe(el);
+        });
+      })();
+    </script>
+  </body>
+</html>
