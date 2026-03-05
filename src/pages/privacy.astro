@@ -1,0 +1,140 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+---
+
+<BaseLayout title="Privacy Policy — mrkdwn.me">
+  <Header />
+  <main class="py-16 md:py-24">
+    <div class="mx-auto max-w-3xl px-4 sm:px-6">
+      <h1 class="text-3xl md:text-4xl font-extrabold text-body mb-2">Privacy Policy</h1>
+      <p class="text-sm text-muted mb-12">Last updated: March 5, 2026</p>
+
+      <div class="space-y-10 text-body text-sm leading-relaxed">
+
+        <section>
+          <h2 class="text-lg font-bold text-body mb-3">1. Our Commitment</h2>
+          <p class="text-muted">
+            mrkdwn.me ("we", "us", "our") respects your privacy. We will not sell, rent, lease, or trade your personal data or vault content to any third party. Your notes are yours.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-lg font-bold text-body mb-3">2. Data We Collect</h2>
+          <p class="text-muted">
+            When you use the Service, we collect and store:
+          </p>
+          <ul class="list-disc list-inside text-muted mt-3 space-y-1.5 pl-2">
+            <li>Account information provided through Clerk (email address, display name, authentication tokens)</li>
+            <li>Vault content you create (notes, folders, and their metadata)</li>
+            <li>Usage data such as audit logs and version history within your vaults</li>
+            <li>API keys you generate for programmatic access</li>
+            <li>Settings and preferences you configure (e.g., OpenRouter API key for AI edit mode)</li>
+          </ul>
+          <p class="text-muted mt-3">
+            We do not use tracking cookies, analytics services, or advertising pixels. We do not build profiles of your behavior for marketing purposes.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-lg font-bold text-body mb-3">3. How We Use Your Data</h2>
+          <p class="text-muted">
+            Your data is used solely to provide and operate the Service. This includes:
+          </p>
+          <ul class="list-disc list-inside text-muted mt-3 space-y-1.5 pl-2">
+            <li>Storing and syncing your notes and folders in real time</li>
+            <li>Authenticating your identity and managing access permissions</li>
+            <li>Enabling features like search, backlinks, graph view, and version history</li>
+            <li>Processing AI chat requests when you choose to use those features</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 class="text-lg font-bold text-body mb-3">4. Third-Party AI Services</h2>
+          <div class="rounded-lg border border-accent/30 p-4 mt-1" style="background-color: rgba(127, 109, 242, 0.05);">
+            <p class="text-muted font-medium">
+              This is important. Please read this section carefully.
+            </p>
+          </div>
+          <p class="text-muted mt-4">
+            mrkdwn.me offers optional AI-powered features, including Q&A chat and AI edit mode. When you use these features, your vault content (or portions of it relevant to your query) is sent to third-party AI providers for processing. These providers currently include:
+          </p>
+          <ul class="list-disc list-inside text-muted mt-3 space-y-1.5 pl-2">
+            <li><strong>Anthropic</strong> (Claude) — used for Q&A chat mode</li>
+            <li><strong>OpenRouter</strong> — used for AI edit mode (using your own API key)</li>
+          </ul>
+          <p class="text-muted mt-3">
+            When you use AI features, the relevant note content from your vault is transmitted to these providers to generate responses. <strong>These third-party AI services are outside of our control.</strong> We cannot guarantee how they store, process, retain, or use the data they receive. Each provider is governed by their own privacy policy and terms of service.
+          </p>
+          <p class="text-muted mt-3">
+            By using any AI feature on mrkdwn.me, you acknowledge and accept that:
+          </p>
+          <ul class="list-disc list-inside text-muted mt-3 space-y-1.5 pl-2">
+            <li>Your vault content will be sent to third-party AI providers</li>
+            <li>Those providers may store, log, or use your data according to their own policies</li>
+            <li>We have no control over what those providers do with your data once it leaves our servers</li>
+            <li>You use AI features at your own risk and discretion</li>
+          </ul>
+          <p class="text-muted mt-3">
+            If you do not want your data sent to third-party AI services, simply do not use the AI chat features. All other features of mrkdwn.me function without any data leaving our infrastructure.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-lg font-bold text-body mb-3">5. Data Storage and Security</h2>
+          <p class="text-muted">
+            Your data is stored on Convex, our serverless backend provider. Authentication is handled by Clerk. We use industry-standard practices to protect your data, including encrypted connections (HTTPS), hashed API keys (SHA-256), and per-user data isolation enforced at the backend level.
+          </p>
+          <p class="text-muted mt-3">
+            However, no system is perfectly secure. We cannot guarantee absolute security and are not liable for any unauthorized access or data breaches. See our <a href="/terms" class="text-accent hover:underline">Terms of Service</a> for details on limitation of liability.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-lg font-bold text-body mb-3">6. Data Sharing</h2>
+          <p class="text-muted">
+            We do not sell your data. We do not share your data with third parties except:
+          </p>
+          <ul class="list-disc list-inside text-muted mt-3 space-y-1.5 pl-2">
+            <li><strong>AI providers</strong> — only when you actively use AI features (see Section 4)</li>
+            <li><strong>Infrastructure providers</strong> — Convex (database) and Clerk (authentication) process your data as necessary to operate the Service</li>
+            <li><strong>Legal obligations</strong> — if required by law, court order, or government request</li>
+            <li><strong>Vault collaborators</strong> — if you share a vault with other users, they can access that vault's content according to their assigned role</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 class="text-lg font-bold text-body mb-3">7. Data Retention</h2>
+          <p class="text-muted">
+            Your data is retained for as long as your account is active. Deleted notes and folders are moved to trash and retained for up to 5 years before permanent deletion. If you delete your account, we will remove your data within a reasonable timeframe, though backups may persist for a limited period.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-lg font-bold text-body mb-3">8. Your Rights</h2>
+          <p class="text-muted">
+            You can export all of your vault data at any time using the download feature (ZIP export). You own your content and can take it with you at any point.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-lg font-bold text-body mb-3">9. Changes to This Policy</h2>
+          <p class="text-muted">
+            We may update this Privacy Policy from time to time. Changes will be reflected by updating the "Last updated" date at the top of this page. Continued use of the Service after changes constitutes acceptance of the revised policy.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-lg font-bold text-body mb-3">10. Contact</h2>
+          <p class="text-muted">
+            If you have questions about this Privacy Policy, you can reach us at
+            <a href="mailto:support@mrkdwn.me" class="text-accent hover:underline">support@mrkdwn.me</a>.
+          </p>
+        </section>
+
+      </div>
+    </div>
+  </main>
+  <Footer />
+</BaseLayout>
