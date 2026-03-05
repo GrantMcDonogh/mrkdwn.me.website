@@ -1,0 +1,149 @@
+---
+import Section from "./Section.astro";
+
+const milestones = [
+  {
+    date: "Feb 17",
+    title: "Core Platform",
+    items: [
+      "Multi-vault system with Clerk auth",
+      "CodeMirror 6 markdown editor",
+      "Wiki links, backlinks & autocomplete",
+      "File explorer with drag-and-drop",
+      "Search & command palette",
+      "Tabbed workspace layout",
+      "Real-time sync via Convex",
+    ],
+  },
+  {
+    date: "Feb 18",
+    title: "Import, Export & Graph",
+    items: [
+      "Interactive knowledge graph",
+      "Import Obsidian vaults (ZIP)",
+      "Download vault as ZIP",
+      "Preview / edit mode toggle",
+      "Vault switcher",
+      "AI onboarding wizard",
+    ],
+  },
+  {
+    date: "Feb 19",
+    title: "AI & Export",
+    items: [
+      "AI chat edit mode with diff preview",
+      "PDF export for single notes",
+      "Markdown file upload",
+    ],
+  },
+  {
+    date: "Feb 24",
+    title: "API & Integrations",
+    items: [
+      "Public REST API v1 (full CRUD)",
+      "Per-vault API key auth",
+      "MCP server for Claude Code / Desktop",
+      "OpenRouter API key settings",
+    ],
+  },
+  {
+    date: "Feb 28",
+    title: "Polish & Docs",
+    items: [
+      "Interactive API documentation page",
+      "Delete confirmation dialogs",
+      "Drag-and-drop cycle prevention",
+      "Alphabetical file explorer sorting",
+    ],
+  },
+  {
+    date: "Mar 3",
+    title: "Collaboration & UX",
+    items: [
+      "Multi-user vault sharing (Owner/Editor/Viewer)",
+      "Link preview popup on wiki link hover",
+      "Markdown rendering in chat messages",
+      "Concise chat responses with wiki links",
+      "Chat endpoint security hardening",
+    ],
+  },
+  {
+    date: "Mar 4–5",
+    title: "Data Safety",
+    items: [
+      "Audit log with user attribution",
+      "Note version history & restore",
+      "Soft delete & trash (5-year retention)",
+      "Audit + versioning for REST API / MCP",
+    ],
+  },
+];
+---
+
+<Section id="roadmap">
+  <div class="text-center mb-16 reveal">
+    <h2 class="text-3xl md:text-4xl font-bold text-body">
+      Shipped <span class="text-accent">fast</span>
+    </h2>
+    <p class="mt-4 text-muted text-lg max-w-2xl mx-auto">
+      From zero to full-featured knowledge platform in under three weeks. Here's what we've built.
+    </p>
+  </div>
+
+  <!-- Timeline -->
+  <div class="relative">
+    <!-- Vertical line -->
+    <div class="absolute left-4 md:left-1/2 md:-translate-x-px top-0 bottom-0 w-0.5 bg-edge"></div>
+
+    <div class="space-y-10">
+      {milestones.map((milestone, i) => (
+        <div class:list={[
+          "relative grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-10 reveal",
+          `reveal-delay-${Math.min(i + 1, 5)}`,
+        ]}>
+          {/* Dot on the line */}
+          <div class="absolute left-4 md:left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-accent border-2 border-surface z-10 mt-1.5"></div>
+
+          {/* Date side */}
+          <div class:list={[
+            "pl-10 md:pl-0",
+            i % 2 === 0 ? "md:text-right md:pr-10" : "md:order-2 md:pl-10",
+          ]}>
+            <div class="text-accent text-sm font-bold uppercase tracking-wider">{milestone.date}</div>
+            <div class="text-xl font-bold text-body mt-1">{milestone.title}</div>
+          </div>
+
+          {/* Items side */}
+          <div class:list={[
+            "pl-10 md:pl-0",
+            i % 2 === 0 ? "md:pl-10" : "md:order-1 md:text-right md:pr-10",
+          ]}>
+            <ul class:list={[
+              "space-y-1.5",
+              i % 2 !== 0 && "md:list-none",
+            ]}>
+              {milestone.items.map((item) => (
+                <li class="text-sm text-muted flex items-start gap-2">
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#7f6df2"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="shrink-0 mt-0.5"
+                  >
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</Section>

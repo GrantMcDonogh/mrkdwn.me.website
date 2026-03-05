@@ -25,15 +25,15 @@ export const primaryFeatures: Feature[] = [
   },
   {
     icon: "MessageSquare",
-    title: "AI Chat",
+    title: "AI Chat & Edit Mode",
     description:
-      "Ask questions about your notes and get answers grounded in your own knowledge base. Powered by Claude, your AI reads across your entire vault.",
+      "Ask questions about your notes and get answers grounded in your vault. Switch to edit mode to let AI modify or create notes with a diff preview before applying.",
   },
   {
-    icon: "FolderLock",
-    title: "Vaults & Import",
+    icon: "Users",
+    title: "Vault Sharing",
     description:
-      "Organize knowledge into separate vaults for work, personal, and research. Already use Obsidian? Import your entire vault in one click.",
+      "Share vaults with your team. Invite collaborators by email with Owner, Editor, or Viewer roles. Real-time collaboration with permission-gated controls.",
   },
   {
     icon: "RefreshCw",
@@ -56,6 +56,30 @@ export const additionalFeatures: Feature[] = [
       "Keyboard-driven navigation. Cmd+P for commands, Cmd+O for quick switcher.",
   },
   {
+    icon: "History",
+    title: "Version History",
+    description:
+      "Automatic snapshots of every note. Browse and restore any previous version.",
+  },
+  {
+    icon: "ClipboardList",
+    title: "Audit Log",
+    description:
+      "Track every action across your vault with full user attribution and timestamps.",
+  },
+  {
+    icon: "Trash2",
+    title: "Trash & Recovery",
+    description:
+      "Soft-delete with a 5-year retention window. Restore any note or folder from the trash.",
+  },
+  {
+    icon: "Api",
+    title: "REST API & MCP Server",
+    description:
+      "Full CRUD API for automation. Connect Claude Code or Claude Desktop via the MCP server.",
+  },
+  {
     icon: "Columns3",
     title: "Split Panes & Tabs",
     description:
@@ -68,15 +92,15 @@ export const additionalFeatures: Feature[] = [
       "Organize notes in a hierarchical folder structure with drag-and-drop.",
   },
   {
-    icon: "Bot",
-    title: "MCP Server",
+    icon: "Upload",
+    title: "Import & Export",
     description:
-      "Connect your vault to Claude Code and Claude Desktop for AI-powered workflows.",
+      "Import Obsidian vaults as ZIP. Export your vault or individual notes as PDF.",
   },
   {
-    icon: "Upload",
-    title: "Import from Obsidian",
+    icon: "Eye",
+    title: "Link Preview Popup",
     description:
-      "Bring your existing Obsidian vault with full folder structure and settings.",
+      "Hover over any wiki link to see a rendered preview of the linked note instantly.",
   },
 ];

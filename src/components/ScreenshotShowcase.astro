@@ -1,0 +1,103 @@
+---
+import Section from "./Section.astro";
+
+const showcases = [
+  {
+    label: "Markdown Editor",
+    title: "Write with power and clarity",
+    description:
+      "Full CodeMirror 6 editor with syntax highlighting, inline preview decorations, and auto-save. Headings, bold, italic, code blocks, task lists, and tags all render inline. Toggle between edit and preview mode per tab.",
+    image: "/screenshots/editor-mode.png",
+    alt: "mrkdwn.me markdown editor with syntax highlighting and file explorer",
+  },
+  {
+    label: "Preview Mode",
+    title: "Beautiful rendered markdown",
+    description:
+      "Notes open in read-only preview by default with rendered markdown, clickable wiki links, and styled code blocks. Double-click or press Ctrl+E to switch to edit mode. Each tab remembers its own mode.",
+    image: "/screenshots/workspace-preview-mode.png",
+    alt: "mrkdwn.me workspace in preview mode showing rendered markdown",
+    reverse: true,
+  },
+  {
+    label: "Knowledge Graph",
+    title: "See how your ideas connect",
+    description:
+      "Interactive force-directed graph showing all notes and their wiki link connections. Click any node to open that note. The more connected a note, the larger it appears. Your active note glows in purple.",
+    image: "/screenshots/graph-view.png",
+    alt: "mrkdwn.me knowledge graph visualization",
+  },
+  {
+    label: "AI Chat",
+    title: "Ask your notes anything",
+    description:
+      "Chat with Claude about your vault. Get answers grounded in your own notes with wiki link citations you can click. Switch to edit mode to let AI modify notes with a diff preview before applying changes.",
+    image: "/screenshots/ai-chat.png",
+    alt: "mrkdwn.me AI chat panel alongside note editor",
+    reverse: true,
+  },
+  {
+    label: "Vault Sharing",
+    title: "Collaborate with your team",
+    description:
+      "Invite collaborators by email with Owner, Editor, or Viewer roles. Editors get full CRUD access; viewers see everything read-only. Shared vaults appear in a dedicated section with role badges throughout the UI.",
+    image: "/screenshots/sharing-dialog.png",
+    alt: "mrkdwn.me vault sharing dialog with role management",
+  },
+  {
+    label: "REST API",
+    title: "Build on top of your vault",
+    description:
+      "Full CRUD REST API at /api/v1/ with interactive documentation. Generate per-vault API keys for authentication. Connect Claude Code or Claude Desktop via the MCP server for AI-powered workflows.",
+    image: "/screenshots/api-docs.png",
+    alt: "mrkdwn.me API reference documentation page",
+    reverse: true,
+  },
+];
+---
+
+<Section id="screenshots">
+  <div class="text-center mb-16 reveal">
+    <h2 class="text-3xl md:text-4xl font-bold text-body">
+      See it <span class="text-accent">in action</span>
+    </h2>
+    <p class="mt-4 text-muted text-lg max-w-2xl mx-auto">
+      Real screenshots from the app. No mockups, no placeholders.
+    </p>
+  </div>
+
+  <div class="space-y-20 md:space-y-28">
+    {showcases.map((item, i) => (
+      <div class:list={[
+        "grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-center",
+        item.reverse && "lg:[direction:rtl]",
+      ]}>
+        <!-- Text -->
+        <div class:list={["reveal", item.reverse && "lg:[direction:ltr]"]}>
+          <div class="text-accent text-sm font-semibold uppercase tracking-wider mb-3">
+            {item.label}
+          </div>
+          <h3 class="text-2xl md:text-3xl font-bold text-body mb-4">
+            {item.title}
+          </h3>
+          <p class="text-muted text-lg leading-relaxed">
+            {item.description}
+          </p>
+        </div>
+
+        <!-- Screenshot -->
+        <div class:list={["reveal reveal-delay-2", item.reverse && "lg:[direction:ltr]"]}>
+          <div class="rounded-xl border border-edge overflow-hidden shadow-2xl transition-transform duration-300 hover:scale-[1.02]">
+            <img
+              src={item.image}
+              alt={item.alt}
+              class="w-full h-auto block"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+</Section>
