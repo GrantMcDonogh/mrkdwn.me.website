@@ -62,6 +62,73 @@ When a user clicks a wiki link:
 
 **Implementation**: Uses `@codemirror/autocomplete` with a custom completion source registered for the `[[` context.
 
+## Link Preview Popup
+
+Hovering over a wiki link shows a popup with rendered markdown content of the linked note, allowing users to peek at linked notes without navigating away.
+
+### Editor Mode (CodeMirror)
+
+**File:** `src/components/editor/wikiLinks.ts`
+
+Uses a custom `ViewPlugin` that manages its own `position: fixed` DOM element appended to `document.body`, bypassing CodeMirror's built-in tooltip system for full control over positioning:
+
+1. A `mousemove` listener on the editor DOM calls `posAtCoords()` to map the mouse position to a document offset, then scans the line for `[[...]]` matches.
+2. If the cursor is over a wiki link, a 300ms timer starts. When it fires, the popup is created and appended to `document.body`.
+3. The linked note's content is retrieved via the injected `getNoteContent(title)` callback.
+4. Content is truncated to 1500 characters, wiki links are stripped to plain text via `preprocessForPDF()`, and HTML is rendered synchronously via `marked.parse()`.
+5. The popup is positioned at the mouse cursor using `positionPopup()` with smart viewport edge detection (see Positioning below).
+6. On `mouseleave` from the editor, a 200ms dismiss timer starts. The popup's own `mouseenter` cancels the dismiss; `mouseleave` from the popup triggers dismissal.
+7. On plugin `destroy()`, all timers are cleared and the popup is removed.
+
+The content provider is injected by `MarkdownEditor` via `setNoteContentProvider()`, following the same module-level callback pattern as `setWikiLinkNavigator` and `setNoteListProvider`.
+
+### Preview Mode (React) & Chat Messages
+
+**Files:** `src/components/editor/MarkdownPreview.tsx`, `src/components/editor/LinkPreviewPopup.tsx`, `src/components/chat/ChatMessage.tsx`
+
+Wiki links are clickable in both the note preview and AI chat responses. Both use the shared `preprocessContent()` utility (`src/utils/preprocessMarkdown.ts`) to convert `[[Title]]` syntax into `wikilink://` markdown links, and a custom `ReactMarkdown` `components.a` handler to intercept clicks and navigate via `OPEN_NOTE` dispatch.
+
+Uses React state and mouse event handlers on the wiki link `<a>` elements:
+
+1. `onMouseEnter` captures `clientX`/`clientY` and starts a 300ms timeout, then sets `hoverState` with the link title and mouse coordinates.
+2. `onMouseLeave` starts a 200ms dismiss timeout (allows the user to move their mouse into the popup).
+3. The `LinkPreviewPopup` component renders conditionally via `createPortal` to `document.body` when `hoverState` is set, using `position: fixed`.
+4. A callback ref on the popup element calls `positionPopup()` on mount for accurate edge detection based on actual rendered size.
+5. The popup's own `onMouseEnter` cancels the dismiss timeout; `onMouseLeave` dismisses the popup.
+6. Content is rendered via `ReactMarkdown` + `remarkGfm` for consistency with the main preview.
+
+### Positioning
+
+Both modes share the `positionPopup()` function (exported from `wikiLinks.ts`) for smart viewport-aware placement:
+
+- **Default**: Popup appears 12px below and to the right of the mouse cursor.
+- **Right edge**: If the popup would overflow the right edge of the viewport, it flips to the left of the cursor.
+- **Bottom edge**: If the popup would overflow the bottom, it flips above the cursor.
+- **Clamping**: The popup is always kept at least 8px from any viewport edge.
+- **Measurement**: The actual rendered size of the popup (`getBoundingClientRect()`) is used for accurate edge detection, not the max CSS dimensions.
+
+### Shared Behavior
+
+| Behavior | Detail |
+|----------|--------|
+| Show delay | 300ms hover before popup appears |
+| Dismiss | Moving mouse away from both link and popup dismisses it |
+| Link to popup | Mouse can move from link directly into popup without flickering |
+| Content truncation | Capped at 1500 characters |
+| Wiki link stripping | `preprocessForPDF()` converts `[[Title\|Alias]]` to plain text in popup content |
+| Missing note | Shows "Note not found" message |
+| Empty note | Shows "Empty note" message |
+| Click passthrough | Clicking a wiki link still navigates (unchanged behavior) |
+| Rendering | Editor: `position: fixed` DOM on `document.body`. Preview: React portal to `document.body` |
+
+### Styling
+
+Popup styles are defined in `src/index.css` under `.link-preview-popup`:
+
+- Dark background (`var(--color-obsidian-bg-secondary)`) with border and box shadow
+- Max dimensions: 450px wide, 320px tall with scrollable overflow
+- Smaller heading sizes inside the popup (h1: 1.4em, h2: 1.2em, h3/h4: 1.05em)
+
 ## Backlinks
 
 ### Concept

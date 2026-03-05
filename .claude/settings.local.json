@@ -6,7 +6,13 @@
       "Bash(npm --version:*)",
       "Bash(npm create astro@latest:*)",
       "Bash(npm install:*)",
-      "Bash(npx astro build:*)"
+      "Bash(npx astro build:*)",
+      "Bash(mkdir:*)",
+      "Bash(npm run:*)",
+      "mcp__plugin_playwright_playwright__browser_navigate",
+      "mcp__plugin_playwright_playwright__browser_take_screenshot",
+      "mcp__plugin_playwright_playwright__browser_evaluate",
+      "mcp__plugin_playwright_playwright__browser_close"
     ]
   }
 }

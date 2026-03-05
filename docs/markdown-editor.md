@@ -2,19 +2,66 @@
 
 ## Overview
 
-The Markdown editor is the core content creation and editing component of mrkdwn.me. It is built on [CodeMirror 6](https://codemirror.net/), configured with a rich set of extensions for Markdown editing, syntax highlighting, live preview, wiki link support, and auto-save functionality.
+The Markdown editor is the core content creation and editing component of mrkdwn.me. Notes open in **preview mode** by default, showing rendered markdown. Users can toggle to **edit mode** to use the full CodeMirror editor. The editor is built on [CodeMirror 6](https://codemirror.net/), configured with a rich set of extensions for Markdown editing, syntax highlighting, live preview, wiki link support, and auto-save functionality.
 
 ## Architecture
 
-**Primary File:** `src/components/editor/MarkdownEditor.tsx`
+**Primary Files:**
+- `src/components/editor/NoteView.tsx` — Wrapper that renders either preview or editor based on tab mode
+- `src/components/editor/MarkdownPreview.tsx` — Read-only rendered markdown view
+- `src/components/editor/MarkdownEditor.tsx` — CodeMirror editing component
 
-The editor is implemented as a React component that manages a CodeMirror `EditorView` instance. Key related modules:
+The system uses a mode-per-tab approach. Each note tab tracks its own `mode` ("preview" or "edit") in workspace state. The `NoteView` component switches between `MarkdownPreview` and `MarkdownEditor` based on this mode.
 
 | File | Purpose |
 |------|---------|
-| `MarkdownEditor.tsx` | Main editor component, CodeMirror setup, auto-save |
-| `wikiLinks.ts` | Wiki link detection, rendering, autocomplete |
-| `livePreview.ts` | Live preview decorations for Markdown syntax |
+| `NoteView.tsx` | Wrapper: renders preview or editor based on tab mode |
+| `MarkdownPreview.tsx` | Read-only markdown rendering with wiki link/tag support |
+| `MarkdownEditor.tsx` | CodeMirror editor component, auto-save |
+| `wikiLinks.ts` | Wiki link detection, rendering, autocomplete, hover preview (editor mode) |
+| `livePreview.ts` | Live preview decorations for Markdown syntax (editor mode) |
+| `LinkPreviewPopup.tsx` | Hover preview popup for wiki links (preview mode) |
+
+## Preview/Edit Mode Toggle
+
+Notes open in preview mode by default. Users can switch between modes via:
+
+| Method | Description |
+|--------|-------------|
+| Double-click in preview | Switches the tab to edit mode |
+| `Ctrl/Cmd + E` | Keyboard shortcut to toggle mode on the active tab |
+| Tab bar icon | Eye (preview) / Pencil (edit) icon on hover |
+| Command palette | "Toggle Preview/Edit Mode" command |
+
+Each tab remembers its mode independently. Toggling mode dispatches the `TOGGLE_TAB_MODE` workspace action.
+
+## Markdown Preview
+
+**File:** `src/components/editor/MarkdownPreview.tsx`
+
+The preview component renders note content as formatted HTML using `react-markdown` with the `remark-gfm` plugin for GitHub Flavored Markdown (tables, task lists, strikethrough).
+
+### Content Pre-processing
+
+Before passing content to `react-markdown`, the component pre-processes the raw markdown to support wiki links and tags:
+
+1. **Code block protection**: Content is split on fenced code blocks (` ``` `) and inline code (`` ` ``) to avoid transforming code content.
+2. **Wiki links**: `[[Title]]` → `[Title](wikilink://Title)` and `[[Title|Alias]]` → `[Alias](wikilink://Title)`.
+3. **Tags**: `#tag` → `[#tag](tag://tag)` (only outside code blocks and not at line start where `#` is a heading marker).
+
+### Custom Link Components
+
+The preview uses custom `react-markdown` component overrides:
+
+| Protocol | Rendering |
+|----------|-----------|
+| `wikilink://` | Clickable link that dispatches `OPEN_NOTE` to navigate; shows hover preview popup |
+| `tag://` | Styled `<span>` with accent color background |
+| Regular URLs | Standard `<a>` tag with `target="_blank"` |
+
+### Styling
+
+Preview styles are defined in `src/index.css` under the `.markdown-preview` class, matching the editor's dark theme. See [design-and-styling.md](./design-and-styling.md) for full CSS details.
 
 ## CodeMirror Extensions
 
@@ -32,6 +79,7 @@ The editor is configured with the following CodeMirror extensions:
 | Search keymap | `@codemirror/search` | Find/replace functionality |
 | Autocomplete | `@codemirror/autocomplete` | Wiki link completion |
 | Wiki link plugin | `wikiLinks.ts` | Renders and navigates wiki links |
+| Wiki link hover preview | `wikiLinks.ts` | ViewPlugin: shows fixed-position popup at mouse cursor on wiki link hover |
 | Live preview plugin | `livePreview.ts` | Inline Markdown formatting preview |
 | Update listener | `@codemirror/view` | Triggers auto-save on changes |
 

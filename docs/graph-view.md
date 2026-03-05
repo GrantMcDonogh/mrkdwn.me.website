@@ -12,7 +12,7 @@ The Graph View provides an interactive, force-directed network visualization of 
 
 **File:** `src/components/graph/GraphView.tsx`
 
-The `GraphView` component:
+The `GraphView` component renders a single `<svg>` element (no wrapper or header — the tab bar provides the label). It:
 
 1. Fetches all notes in the active vault.
 2. Parses wiki links from each note's content to build a link graph.
@@ -178,15 +178,16 @@ The `activeNoteId` is derived internally via `useWorkspace()` — the component 
 2. SVG elements are cleaned up.
 3. Event listeners are removed.
 
-## Panel Placement
+## Placement
 
-The graph view is displayed in the **right panel** of the app layout:
+The graph view opens as a **tab in the main editor area**, the same way notes open:
 
-- Toggled via the workspace state: `rightPanel === "graph"`.
 - Activated through:
-  - Toolbar button in the app layout header.
-  - Command palette: "Toggle Graph View" command.
-- The panel shares space with backlinks, search, and chat (only one right panel visible at a time).
+  - Toolbar button in the app layout header (dispatches `OPEN_GRAPH`).
+  - Command palette: "Open Graph View" command.
+- If a graph tab already exists in the active pane, it is reactivated instead of creating a duplicate.
+- The graph tab appears in the tab bar with a `GitFork` icon and the label "Graph".
+- Users can switch between graph and note tabs freely; both coexist in the same pane.
 
 ## Performance
 

@@ -26,7 +26,7 @@ mrkdwn.me follows the desktop Obsidian app's dark-first aesthetic — a low-cont
 
 | File | What it styles |
 |------|---------------|
-| `src/index.css` | Theme tokens, global resets, scrollbars, all CodeMirror overrides |
+| `src/index.css` | Theme tokens, global resets, scrollbars, CodeMirror overrides, markdown preview styles |
 | `src/components/editor/livePreview.ts` | Heading, bold, italic, code, blockquote, HR, checkbox decorations |
 | `src/components/editor/wikiLinks.ts` | Wiki link and tag decorations |
 | `src/components/graph/GraphView.tsx` | D3 force graph SVG styling (inline) |
@@ -374,6 +374,43 @@ Wiki links are rendered as replacement widgets — the `[[...]]` syntax is hidde
 
 ---
 
+## Markdown Preview Styling
+
+The `.markdown-preview` class in `src/index.css` styles the read-only rendered markdown view. It matches the editor's dark theme and heading scale.
+
+### Base
+
+```css
+.markdown-preview → font-size: 16px, line-height: 1.7, cursor: default
+```
+
+### Headings
+
+| Level | Size | Weight |
+|-------|------|--------|
+| H1 | `2em` | 700 |
+| H2 | `1.6em` | 600 |
+| H3 | `1.3em` | 600 |
+| H4 | `1.1em` | 600 |
+| H5-H6 | `1em` | 600 |
+
+### Elements
+
+| Element | Styling |
+|---------|---------|
+| Links | `obsidian-link` color, no underline (underline on hover) |
+| Wiki links | `.markdown-preview-wikilink` — accent color, pointer cursor |
+| Tags | `.markdown-preview-tag` — accent color, `rgba(127,109,242,0.1)` bg, 3px radius |
+| Inline code | `rgba(255,255,255,0.06)` bg, Fira Code font, 0.9em |
+| Code blocks | `rgba(255,255,255,0.06)` bg, 6px radius, 12px 16px padding |
+| Blockquotes | 3px left border (accent), muted text color |
+| Tables | Collapsed borders, `obsidian-border`, `obsidian-bg-secondary` header bg |
+| HR | 1px `obsidian-border` top border |
+| Task checkboxes | `accent-color: obsidian-accent`, disabled |
+| Strikethrough | Muted text color |
+
+---
+
 ## Graph View Styling (D3.js)
 
 The graph view uses D3.js with inline SVG attributes — no CSS classes.
@@ -461,6 +498,15 @@ All icons come from **lucide-react** (v0.574.0). They are used as inline React c
 | Empty states | `48` |
 
 Icon color follows the parent text color via `className="text-obsidian-text-muted"` or `"text-obsidian-accent"`.
+
+### Favicon & Touch Icons
+
+| File | Purpose |
+|------|---------|
+| `public/favicon.svg` | Browser tab icon (SVG, 32×32 viewBox) |
+| `public/apple-touch-icon.png` | iOS/iPadOS home screen icon (180×180 PNG) |
+
+Both are referenced in `index.html` via `<link>` tags. The apple-touch-icon is required because iOS ignores SVG favicons when saving a page to the home screen.
 
 ---
 

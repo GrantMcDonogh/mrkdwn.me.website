@@ -153,6 +153,18 @@ Processes a `FileList` from `<input type="file" webkitdirectory>` into a structu
 4. **Note reading**: Each `.md` file is read via `file.text()`. Title is the filename without `.md` extension. Notes are assigned incremental `order` values within each folder independently.
 5. **Settings parsing**: `app.json`, `appearance.json`, and `graph.json` are parsed with type-safe field extraction.
 
+### `prepareUploadNotes(files: FileList, targetFolderId?) → Promise<{ notes, folderIdMap }>`
+
+Prepares notes from a `FileList` for upload into an **existing** vault. Used by the File Explorer's upload button and drag-and-drop handler.
+
+1. **Filters** the `FileList` to only `.md` files (by checking `file.name.endsWith(".md")`)
+2. **Reads** each file's text content via `file.text()`
+3. **Derives** the note title by stripping the `.md` extension from the filename
+4. **Assigns** sequential `order` values (0, 1, 2, …) among the filtered `.md` files
+5. **Maps** the target folder: if `targetFolderId` is provided, all notes get `folderTempId: "target"` and the `folderIdMap` maps `"target"` → the real folder ID. If no target folder, notes have no `folderTempId` (vault root).
+
+The returned `{ notes, folderIdMap }` can be passed directly to `batchNotes()`.
+
 ### `batchNotes(notes, folderIdMap, vaultId) → batches[]`
 
 Splits notes into batches where each batch's total JSON-serialized size stays under 800KB. Maps `folderTempId` to real `folderId` using the server-returned mapping.
@@ -233,9 +245,56 @@ Augments React's `InputHTMLAttributes` to include `webkitdirectory` and `directo
 
 ---
 
+## Upload to Existing Vault
+
+In addition to importing an entire Obsidian vault (which creates a **new** vault), users can upload `.md` files into an **existing** vault. This feature lives in the File Explorer component. See [File Explorer](./file-explorer.md) for UI details.
+
+### Data Flow
+
+```
+User clicks Upload button or drags .md files
+        │
+        ▼
+  ┌─────────────────────┐
+  │ prepareUploadNotes() │  Client-side: filter .md files, read content,
+  │                      │  derive titles, build folderIdMap
+  └──────────┬──────────┘
+             │ { notes, folderIdMap }
+             ▼
+  ┌─────────────────┐
+  │ batchNotes()    │  Split into size-limited batches (≤800KB each)
+  └──────────┬──────┘
+             │ batches[]
+             ▼
+  ┌─────────────────────┐
+  │ notes.importBatch   │  Existing mutation: bulk creates notes
+  │ (mutation, N calls) │
+  └──────────┬──────────┘
+             │
+             ▼
+   Notes appear in explorer
+```
+
+### Entry Points
+
+| Trigger | Target Folder |
+|---------|---------------|
+| Upload button in explorer header | Vault root |
+| Upload button on folder hover | That folder |
+| Drag `.md` files onto explorer root area | Vault root |
+| Drag `.md` files onto a folder | That folder |
+
+### Reused Code
+
+- `prepareUploadNotes()` from `src/lib/importVault.ts` — file filtering, content reading, folder mapping
+- `batchNotes()` from `src/lib/importVault.ts` — size-aware batching
+- `notes.importBatch` mutation from `convex/notes.ts` — bulk note creation with auth
+
+---
+
 ## Tests
 
-**File:** `src/lib/importVault.test.ts` (30 tests)
+**File:** `src/lib/importVault.test.ts` (49 tests)
 
 ### Coverage
 
@@ -249,6 +308,12 @@ Augments React's `InputHTMLAttributes` to include `webkitdirectory` and `directo
 | AI Brain integration | 1 | Full realistic vault with all assertions (9 notes, 6 folders, nested parents, root notes, settings) |
 | batchNotes | 6 | Single batch, folder ID mapping, size-based splitting, empty input, oversized single note, vaultId propagation |
 | Edge cases | 3 | No .md files, empty content, deeply nested paths |
+| prepareUploadNotes — file filtering | 4 | .md-only filtering, no .md files, empty FileList, case-sensitive extension matching |
+| prepareUploadNotes — title derivation | 3 | .md stripping, filenames with dots, edge case `.md`-only filename |
+| prepareUploadNotes — content reading | 3 | Markdown content, empty files, unicode preservation |
+| prepareUploadNotes — ordering | 2 | Sequential order, correct ordering when non-md files interleaved |
+| prepareUploadNotes — folder targeting | 3 | Root upload (no folder), targeted folder with folderIdMap, undefined target |
+| prepareUploadNotes + batchNotes integration | 4 | End-to-end root upload, folder-targeted upload, non-md filtering before batching, large upload batch splitting |
 
 ---
 
@@ -261,8 +326,9 @@ Augments React's `InputHTMLAttributes` to include `webkitdirectory` and `directo
 | `convex/folders.ts` | Modified | Added `importBatch` internal mutation |
 | `convex/notes.ts` | Modified | Added `importBatch` public mutation |
 | `convex/importVault.ts` | Created | `createVaultWithFolders` action |
-| `src/lib/importVault.ts` | Created | Client-side file parsing + batching |
-| `src/lib/importVault.test.ts` | Created | 30 unit tests |
+| `src/lib/importVault.ts` | Created | Client-side file parsing, batching, and upload preparation (`prepareUploadNotes`) |
+| `src/lib/importVault.test.ts` | Created | 49 unit tests (vault import + upload preparation) |
 | `src/components/vault/ImportVaultDialog.tsx` | Created | Import modal UI |
 | `src/components/vault/VaultSelector.tsx` | Modified | Added Import Vault button |
+| `src/components/explorer/FileExplorer.tsx` | Modified | Added upload button, drag-and-drop for external `.md` files, uploading state |
 | `src/types/webkitdirectory.d.ts` | Created | TypeScript type augmentation |

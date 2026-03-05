@@ -17,6 +17,8 @@ mrkdwn.me is a cloud-based knowledge management system inspired by [Obsidian](ht
 | Authentication | @clerk/clerk-react | ^5.25.3 |
 | Editor | CodeMirror 6 | 6.x (multiple packages) |
 | Graph Visualization | D3.js | 7.9.0 |
+| Markdown Rendering | react-markdown + remark-gfm | latest |
+| ZIP Generation | JSZip | latest |
 | Icons | lucide-react | 0.574.0 |
 
 ## Architecture
@@ -52,8 +54,12 @@ The application follows a **client-server architecture** with Convex as the serv
 │  │ .ts      │ │ .ts      │ │ .ts      │            │
 │  └──────────┘ └──────────┘ └──────────┘            │
 │  ┌──────────┐ ┌──────────┐ ┌──────────┐            │
-│  │ chat.ts  │ │ http.ts  │ │ schema   │            │
-│  │          │ │          │ │ .ts      │            │
+│  │ chat.ts  │ │chatEdit  │ │onboarding│            │
+│  │          │ │ .ts      │ │ .ts      │            │
+│  └──────────┘ └──────────┘ └──────────┘            │
+│  ┌──────────┐ ┌──────────┐ ┌──────────┐            │
+│  │userSett- │ │ http.ts  │ │ schema   │            │
+│  │ ings.ts  │ │          │ │ .ts      │            │
 │  └──────────┘ └──────────┘ └──────────┘            │
 │                                                     │
 │  Database: Convex (document-based, indexed)          │
@@ -69,38 +75,69 @@ mrkdwn-me/
 │   ├── components/
 │   │   ├── auth/                 # Authentication UI (Clerk SignIn)
 │   │   ├── backlinks/            # Backlinks panel
-│   │   ├── chat/                 # AI chat panel (Claude RAG)
+│   │   ├── chat/                 # AI chat panel (RAG Q&A + edit mode)
 │   │   ├── command-palette/      # Command palette & quick switcher
-│   │   ├── editor/               # Markdown editor, wiki links, live preview
+│   │   ├── docs/                 # Public API documentation page
+│   │   ├── editor/               # Markdown editor, preview, wiki links, live preview, version history
 │   │   ├── explorer/             # File tree explorer
+│   │   ├── trash/                # Trash panel (soft-deleted items)
 │   │   ├── graph/                # D3.js graph visualization
 │   │   ├── layout/               # App layout, sidebar, split panes, tabs
 │   │   ├── search/               # Search panel
-│   │   └── vault/                # Vault selection & management
+│   │   ├── settings/             # Settings dialog (OpenRouter key, vault API keys)
+│   │   └── vault/                # Vault selection, management, sharing, onboarding & audit log
+│   ├── hooks/
+│   │   ├── useDownloadVault.ts   # Vault download hook
+│   │   ├── useExportNotePDF.ts   # Single-note PDF export hook
+│   │   ├── useOnboardingGenerate.ts # AI onboarding stream hook
+│   │   └── useVaultRole.ts       # Permission derivation hook for sharing
+│   ├── utils/
+│   │   ├── downloadVault.ts      # ZIP building utility
+│   │   └── exportNoteToPDF.ts    # PDF export utility
 │   ├── store/
 │   │   └── workspace.tsx         # Global state (Context + Reducer)
-│   ├── App.tsx                   # Root component with auth gating
+│   ├── App.tsx                   # Root component with auth gating + /docs route
 │   ├── main.tsx                  # Entry point with providers
 │   └── index.css                 # Global styles & Tailwind theme
 │
 ├── convex/                       # Backend serverless functions
 │   ├── schema.ts                 # Database schema
 │   ├── auth.config.ts            # Clerk JWT validation config
+│   ├── auth.ts                   # Shared auth module (role-based access control)
 │   ├── vaults.ts                 # Vault CRUD operations
 │   ├── folders.ts                # Folder management
 │   ├── notes.ts                  # Note CRUD, search, backlinks
-│   ├── chat.ts                   # AI chat HTTP action (Claude API)
+│   ├── auditLog.ts               # Audit log helper + queries
+│   ├── noteVersions.ts           # Version snapshot helper + queries + restore
+│   ├── trash.ts                  # Trash queries, restore, permanent delete, purge
+│   ├── crons.ts                  # Daily cron for 5-year trash purge
+│   ├── sharing.ts                # Vault sharing (invite, accept, list, remove)
+│   ├── apiKeys.ts                # Vault API key CRUD + internal validation
+│   ├── internalApi.ts            # Auth-free internal queries/mutations for REST API
+│   ├── apiHelpers.ts             # HTTP action wrappers (apiAction, apiKeyAction)
+│   ├── apiVaults.ts              # REST API v1 vault endpoint
+│   ├── apiFolders.ts             # REST API v1 folder endpoints
+│   ├── apiNotes.ts               # REST API v1 note endpoints
+│   ├── chat.ts                   # AI chat HTTP action (Claude API, Q&A mode)
 │   ├── chatHelpers.ts            # RAG context builder (internal query)
-│   ├── http.ts                   # HTTP routes (/api/chat)
+│   ├── chatEdit.ts               # AI chat HTTP action (OpenRouter, edit mode)
+│   ├── chatEditHelpers.ts        # Edit-mode context builder with active note
+│   ├── onboarding.ts             # AI onboarding wizard HTTP action
+│   ├── userSettings.ts           # User settings (OpenRouter key) CRUD
+│   ├── testKey.ts                # OpenRouter API key validation HTTP action
+│   ├── http.ts                   # HTTP routes (chat, REST API v1, onboarding)
 │   └── _generated/               # Auto-generated API types
 │
 ├── mcp-server/                   # MCP server for AI tool access
-│   ├── src/                      # Server source (tools for vaults/folders/notes)
+│   ├── src/
+│   │   ├── index.ts              # Entry point, MCP server setup, stdio transport
+│   │   ├── api-client.ts         # Fetch-based REST API client
+│   │   └── tools/                # Tool definitions (vaults, folders, notes)
 │   ├── package.json
 │   └── tsconfig.json
 │
 ├── docs/                         # Project documentation
-├── public/                       # Static assets
+├── public/                       # Static assets (favicon.svg, apple-touch-icon.png)
 ├── index.html                    # HTML entry point
 ├── package.json                  # Dependencies & scripts
 ├── vite.config.ts                # Vite build config
@@ -112,15 +149,24 @@ mrkdwn-me/
 
 ## Data Model Overview
 
-The application has three database tables (users are managed by Clerk):
+The application has eight database tables (users are managed by Clerk):
 
 - **Vaults** - Top-level containers owned by a user (identified by Clerk `tokenIdentifier`). All notes and folders belong to a vault.
-- **Folders** - Hierarchical containers within a vault. Support unlimited nesting via self-referencing `parentId`. Have an `order` field for sorting.
-- **Notes** - Markdown documents within a vault, optionally inside a folder. Support full-text search on title and content. Have `order`, `createdAt`, and `updatedAt` fields.
+- **Folders** - Hierarchical containers within a vault. Support unlimited nesting via self-referencing `parentId`. Have an `order` field for sorting. Support soft deletion with `isDeleted`, `deletedAt`, `deletedBy` fields.
+- **Notes** - Markdown documents within a vault, optionally inside a folder. Support full-text search on title and content. Have `order`, `createdAt`, `updatedAt`, and `updatedBy` fields. Support soft deletion with `isDeleted`, `deletedAt`, `deletedBy` fields.
+- **Vault Members** - Sharing memberships linking users to vaults with a role (editor or viewer). Owner role is implicit from `vaults.userId`. Supports email-based invitations with pending/accepted status.
+- **User Settings** - Per-user configuration (OpenRouter API key for chat edit mode). Keyed by Clerk `tokenIdentifier`.
+- **API Keys** - Vault-scoped API keys for the REST API and MCP server. Only the SHA-256 hash is stored; the raw key is shown once at creation.
+- **Audit Log** - Records every action (create, update, rename, move, delete, restore, permanent delete) with user attribution. Indexed by vault and target.
+- **Note Versions** - Point-in-time content snapshots of notes. Throttled to max 1 per 5 min on content edits; always created on rename, move, and delete.
 
 ```
 User (Clerk) 1──* Vault 1──* Folder (self-referencing parentId)
-                           1──* Note
+                       | 1──* Note 1──* NoteVersion
+                       | 1──* VaultMember (sharing)
+                       | 1──* ApiKey
+                       | 1──* AuditLog
+             1──1 UserSettings
 ```
 
 ## Key Design Decisions
@@ -179,5 +225,8 @@ npm run lint
 | Database & API | [database-and-api.md](./database-and-api.md) |
 | Real-Time & Sync | [real-time-and-sync.md](./real-time-and-sync.md) |
 | AI Chat (RAG) | [rag-chat.md](./rag-chat.md) |
+| Import Vault & Upload | [import-vault.md](./import-vault.md) |
+| Download, Export & PDF | [download-vault.md](./download-vault.md) |
 | Design & Styling | [design-and-styling.md](./design-and-styling.md) |
 | MCP Server | [mcp-server.md](./mcp-server.md) |
+| Audit Log, Version History & Trash | [audit-log-version-history-trash.md](./audit-log-version-history-trash.md) |
